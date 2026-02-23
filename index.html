@@ -1,0 +1,656 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Portal Corporativo</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#ffffff;
+      --txt:#111827;
+      --muted:#6b7280;
+      --stroke:#e7e9f2;
+      --pink:#ff6fae;
+      --blue:#67b7ff;
+      --shadow: 0 18px 40px rgba(17, 24, 39, .10);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; min-height:100vh; display:grid; place-items:center;
+      font-family:"Quicksand", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--txt);
+      background:
+        radial-gradient(900px 500px at 18% 12%, rgba(103,183,255,.20) 0%, transparent 60%),
+        radial-gradient(900px 500px at 82% 88%, rgba(255,111,174,.20) 0%, transparent 55%),
+        linear-gradient(180deg, #fff, #fbfbff);
+      padding:18px;
+    }
+
+    /* LOGIN “EMPRESA” */
+    .wrap{width:min(980px,100%)}
+    .shell{
+      display:grid; gap:14px;
+      grid-template-columns: 1fr;
+      align-items:stretch;
+    }
+    @media (min-width:900px){
+      .shell{grid-template-columns: 1.05fr .95fr;}
+    }
+
+    .card{
+      background:rgba(255,255,255,.92);
+      border:1px solid var(--stroke);
+      border-radius:22px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .topbar{
+      padding:16px 18px;
+      border-bottom:1px solid var(--stroke);
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      background:rgba(255,255,255,.9);
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      font-weight:900;
+      letter-spacing:.2px;
+    }
+    .logo{
+      width:34px; height:34px; border-radius:12px;
+      background:linear-gradient(135deg,var(--pink),var(--blue));
+      box-shadow:0 0 18px rgba(255,111,174,.22);
+    }
+    .badge{
+      font-size:12px; color:var(--muted);
+      border:1px solid var(--stroke);
+      padding:8px 10px;
+      border-radius:999px;
+      background:#fff;
+      white-space:nowrap;
+      font-weight:900;
+    }
+    .content{padding:18px}
+    h1{margin:0; font-size:18px; font-weight:900}
+    p{margin:8px 0 0; color:var(--muted); line-height:1.5; font-weight:650; font-size:14px}
+
+    form{margin-top:14px; display:grid; gap:10px}
+    label{font-size:12px; color:#374151; font-weight:900}
+    .field{display:grid; gap:6px}
+    input{
+      width:100%;
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid var(--stroke);
+      outline:none;
+      font-family:inherit;
+      font-weight:700;
+      font-size:14px;
+      background:#fff;
+    }
+    input:focus{
+      border-color: rgba(103,183,255,.65);
+      box-shadow: 0 0 0 4px rgba(103,183,255,.15);
+    }
+
+    .row{
+      display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap;
+      margin-top:6px;
+    }
+    .smallLink{
+      font-size:12px;
+      color:#4b5563;
+      font-weight:900;
+      text-decoration:none;
+      border-bottom:1px dashed rgba(75,85,99,.45);
+    }
+
+    button{
+      border:0; cursor:pointer;
+      border-radius:16px;
+      padding:12px 14px;
+      font-weight:900;
+      font-family:inherit;
+      font-size:14px;
+      white-space:nowrap;
+    }
+    .btnPrimary{
+      background: linear-gradient(135deg, var(--pink), var(--blue));
+      color:#fff;
+      box-shadow:0 12px 24px rgba(103,183,255,.18);
+      transition: transform .15s ease;
+    }
+    .btnPrimary:active{transform:scale(.98)}
+    .btnGhost{
+      background:#fff;
+      color:#111827;
+      border:1px solid var(--stroke);
+    }
+
+    .loader{
+      display:none;
+      margin-top:12px;
+      gap:10px;
+      align-items:center;
+      color:var(--muted);
+      font-weight:900;
+      font-size:13px;
+    }
+    .bar{
+      flex:1;
+      height:10px;
+      border-radius:999px;
+      background:#eef2ff;
+      border:1px solid var(--stroke);
+      overflow:hidden;
+      position:relative;
+      min-width:140px;
+    }
+    .bar::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      width:45%;
+      background: linear-gradient(135deg, rgba(255,111,174,.75), rgba(103,183,255,.75));
+      transform: translateX(-100%);
+      animation: load 1.1s infinite;
+    }
+    @keyframes load{0%{transform:translateX(-100%)} 100%{transform:translateX(220%)}}
+
+    /* OVERLAY (frases + surpresa) */
+    .overlay{
+      position:fixed; inset:0;
+      display:none; place-items:center;
+      padding:18px;
+      background:
+        radial-gradient(900px 500px at 18% 12%, rgba(103,183,255,.22) 0%, transparent 60%),
+        radial-gradient(900px 500px at 82% 88%, rgba(255,111,174,.22) 0%, transparent 55%),
+        linear-gradient(180deg, #fff, #fbfbff);
+      z-index:9999;
+      
+      overflow-y: auto ;
+    }
+    .overlay.show{display:grid}
+    .box{
+      width:min(620px,100%);
+      background:rgba(255,255,255,.94);
+      border:1px solid var(--stroke);
+      border-radius:22px;
+      box-shadow:var(--shadow);
+      padding:18px;
+      opacity:0;
+      transform:translateY(10px);
+      transition: opacity .45s ease, transform .45s ease;
+    }
+    .overlay.show .box{opacity:1; transform:translateY(0)}
+
+    .miniRow{
+      display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+    .pill{
+      font-size:12px;
+      padding:9px 11px;
+      border-radius:999px;
+      border:1px solid var(--stroke);
+      background:#fff;
+      color:var(--muted);
+      font-weight:900;
+      display:inline-flex; align-items:center; gap:8px;
+    }
+    .heart{
+      width:12px; height:12px;
+      display:inline-block;
+      transform: rotate(45deg);
+      background: var(--pink);
+      border-radius:3px;
+      position:relative;
+      box-shadow: 0 0 14px rgba(255,111,174,.25);
+      animation: beat 1.25s infinite;
+    }
+    .heart::before,.heart::after{
+      content:"";
+      position:absolute;
+      width:12px; height:12px;
+      background: var(--pink);
+      border-radius:50%;
+    }
+    .heart::before{left:-6px; top:0}
+    .heart::after{left:0; top:-6px}
+    @keyframes beat{0%,100%{transform:rotate(45deg) scale(1)} 50%{transform:rotate(45deg) scale(1.12)}}
+
+    .letter{
+      margin-top:10px;
+      padding:16px;
+      border-radius:18px;
+      border:1px dashed #d6d9ea;
+      background:rgba(255,255,255,.78);
+      min-height:120px;
+    }
+    .typing{
+      font-size:15.2px;
+      color:#334155;
+      white-space:pre-wrap;
+      font-weight:700;
+    }
+    .cursor{
+      display:inline-block;
+      width:10px; height:16px;
+      vertical-align:-2px;
+      background: rgba(51, 65, 85, .65);
+      margin-left:4px;
+      animation: blink .9s infinite;
+      border-radius:2px;
+    }
+    @keyframes blink{0%,100%{opacity:1} 50%{opacity:.18}}
+
+    .btnRow{display:flex; gap:10px; margin-top:12px; flex-wrap:wrap}
+    .btnNext{
+      background: linear-gradient(135deg, var(--pink), var(--blue));
+      color:#fff;
+      box-shadow:0 12px 24px rgba(103,183,255,.18);
+    }
+    .btnNext.reveal-ready{
+      animation: pulse 1.2s infinite;
+      filter: drop-shadow(0 0 12px rgba(255,111,174,.25));
+    }
+    @keyframes pulse{0%,100%{transform:scale(1)} 50%{transform:scale(1.03)}}
+
+    .surprise{
+      display:none;
+      margin-top:14px;
+      padding:16px;
+      border-radius:18px;
+      border:1px solid rgba(103,183,255,.35);
+      background:
+        radial-gradient(420px 160px at 20% 10%, rgba(103,183,255,.16), transparent 60%),
+        radial-gradient(420px 160px at 80% 90%, rgba(255,111,174,.14), transparent 60%),
+        rgba(255,255,255,.8);
+    }
+
+    .ultraWrap{display:none}
+    .ultra{
+      width:100%;
+      border-radius:16px;
+      border:1px solid #e6e8f2;
+      box-shadow:0 16px 30px rgba(17,24,39,.12);
+      transform: scale(.96);
+      opacity:0;
+      transition: opacity .7s ease, transform .7s ease;
+      background:#fff;
+    }
+    #ultraImg {
+        width:100%; 
+        border-radius:16px 16px 0 0;
+        object-fit: contain;
+        object-position: top center;
+    }
+    .ultra.show{opacity:1; transform:scale(1)}
+
+    .msg{display:none; margin-top:14px}
+    .big{
+      margin:0; font-size:26px; font-weight:900; letter-spacing:.2px;
+      color:#111827;
+      line-height:1.15;
+    }
+    .spark{
+      background: linear-gradient(135deg, var(--pink), var(--blue));
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+    }
+    .subMsg{
+      margin-top:8px;
+      color:#374151;
+      font-weight:900;
+      line-height:1.4;
+      font-size:14.5px;
+    }
+    .sig{
+      margin-top:12px;
+      padding:10px 12px;
+      border-radius:16px;
+      border:1px solid var(--stroke);
+      background:#fff;
+      color:#334155;
+      font-weight:900;
+    }
+
+    /* CANVAS do confete */
+    #starConfetti{
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      display: none;
+      z-index: 10000; /* acima do overlay */
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <section class="shell">
+      <!-- LOGIN -->
+      <div class="card">
+        <div class="topbar">
+          <div class="brand"><span class="logo"></span>Portal Corporativo</div>
+          <div class="badge">Acesso de Colaboradores</div>
+        </div>
+
+        <div class="content">
+          <h1>Entrar</h1>
+          <p>Use seu e-mail corporativo e senha para continuar.</p>
+
+          <form id="loginForm" autocomplete="off">
+            <div class="field">
+              <label for="email">E-mail</label>
+              <input id="email" name="email" placeholder="nome.sobrenome@empresa.com" />
+            </div>
+
+            <div class="field">
+              <label for="pass">Senha</label>
+              <input id="pass" name="pass" type="password" placeholder="••••••••" />
+            </div>
+
+            <div class="row">
+              <a class="smallLink" href="javascript:void(0)">Esqueci minha senha</a>
+              <button class="btnGhost" type="button">Suporte</button>
+            </div>
+
+            <button class="btnPrimary" id="btnLogin" type="submit">Entrar</button>
+
+            <div class="loader" id="loader">
+              Validando credenciais…
+              <div class="bar"></div>
+            </div>
+          </form>
+
+          <p style="margin-top:12px;font-weight:900;color:#374151">
+            Ambiente seguro • Sessão criptografada
+          </p>
+        </div>
+      </div>
+
+      <!-- INFO -->
+      <div class="card">
+        <div class="topbar">
+          <div class="brand"><span class="logo"></span>Comunicados</div>
+          <div class="badge">TI • Suporte</div>
+        </div>
+        <div class="content">
+          <h1>Avisos</h1>
+          <p>
+            • Não compartilhe sua senha<br>
+            • Em caso de lentidão, aguarde alguns segundos<br>
+            • Use Wi-Fi para melhor experiência
+          </p>
+
+          <p style="margin-top:14px;font-weight:900;color:#374151">
+            (Recomendação: abrir com o brilho do celular em 70% 😊)
+          </p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- OVERLAY: FRASES + SURPRESA -->
+  <div class="overlay" id="overlay" aria-hidden="true">
+    <div class="box">
+      <div class="miniRow">
+        <span class="pill">💌 Uma cartinha especial</span>
+        <span class="pill"><span class="heart"></span> feita com muito amor</span>
+      </div>
+
+      <div class="letter">
+        <div class="typing" id="typing"></div><span class="cursor" id="cursor"></span>
+      </div>
+
+      <div class="btnRow">
+        <button class="btnNext" id="btnNext" type="button">Continuar</button>
+      </div>
+
+      <div class="surprise" id="surpriseBox">
+        <div class="ultraWrap" id="ultraWrap">
+          <img class="ultra" id="ultraImg" src="img/imagem.jpeg" alt="Ultrassom do bebê">
+        </div>
+
+        <div class="msg" id="msg">
+          <p class="big"><span class="spark">Família…</span> eu tô chegando 💖💙</p>
+          <p class="subMsg" id="extraLine">Guardem um abraço bem forte pra mim. Já já eu tô aí 🥹</p>
+          <div class="sig" id="sig">— com amor, o bebê</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confete de estrelas -->
+  <canvas id="starConfetti" aria-hidden="true"></canvas>
+
+  <script>
+    // ===== Personalize aqui =====
+    const assinaturaFinal = "— com amor, o bebê"; // pode trocar (ex.: "— do seu novo amorzinho")
+    const fraseFinal = "Guardem um abraço bem forte pra mim. Já já eu tô aí 🥹";
+
+    document.getElementById("sig").textContent = assinaturaFinal;
+    document.getElementById("extraLine").textContent = fraseFinal;
+
+    // História criativa (bebê só revela no final)
+    const steps = [
+      "Oi, família… ✨\n\nEu sou uma mensagem viajante.\nPassei por abraços, risadas, cafés na mesa, domingos preguiçosos e conversas que aquecem o coração.",
+      "No caminho, eu vi uma coisa linda: vocês.\nUma família que se junta, que cuida, que faz do simples um lugar seguro.\n\nE eu guardei cada pedacinho disso como se fosse um tesouro.",
+      "Hoje eu cheguei com uma missão.\nTrazer um segredo bem delicado… daqueles que fazem o peito ficar quentinho.\n\nMas antes, respira…",
+      "Agora eu posso contar.\nEu não sou só uma mensagem.\n\nEu sou o próximo capítulo da nossa história.\nSou eu…"
+    ];
+
+    // ===== Login/overlay =====
+    const loginForm = document.getElementById("loginForm");
+    const btnLogin = document.getElementById("btnLogin");
+    const loader = document.getElementById("loader");
+
+    const overlay = document.getElementById("overlay");
+    const typingEl = document.getElementById("typing");
+    const cursorEl = document.getElementById("cursor");
+    const btnNext = document.getElementById("btnNext");
+
+    const surpriseBox = document.getElementById("surpriseBox");
+    const ultraWrap = document.getElementById("ultraWrap");
+    const ultraImg = document.getElementById("ultraImg");
+    const msg = document.getElementById("msg");
+
+    let stepIndex = 0;
+    let isTyping = false;
+
+    function openOverlay(){
+      overlay.classList.add("show");
+      overlay.setAttribute("aria-hidden", "false");
+      showStep();
+    }
+
+    function typeText(text, speed=18){
+      isTyping = true;
+      typingEl.textContent = "";
+      let i = 0;
+
+      const timer = setInterval(() => {
+        typingEl.textContent += text[i];
+        i++;
+        if (i >= text.length) {
+          clearInterval(timer);
+          isTyping = false;
+          cursorEl.style.opacity = 1;
+
+          if (stepIndex === steps.length - 1) {
+            btnNext.textContent = "Revelar a surpresa";
+            btnNext.classList.add("reveal-ready");
+          }
+        }
+      }, speed);
+    }
+
+    function showStep(){
+      cursorEl.style.opacity = 1;
+      btnNext.classList.remove("reveal-ready");
+      btnNext.textContent = "Continuar";
+      typeText(steps[stepIndex]);
+    }
+
+    function revealSurprise(){
+      surpriseBox.style.display = "block";
+
+      // 1) mostra ultrassom
+      ultraWrap.style.display = "block";
+      requestAnimationFrame(() => ultraImg.classList.add("show"));
+
+      // 2) depois mostra mensagem + confete
+      setTimeout(() => {
+        msg.style.display = "block";
+        startStarConfetti({
+          count: 180,
+          durationMs: 1900,
+          spread: 1.45,
+          originY: window.innerHeight * 0.40
+        });
+      }, 1200);
+
+      btnNext.disabled = true;
+      btnNext.textContent = "💖💙";
+      btnNext.classList.remove("reveal-ready");
+    }
+
+    btnNext.addEventListener("click", () => {
+      if (isTyping) return;
+
+      if (stepIndex === steps.length - 1) {
+        revealSurprise();
+        return;
+      }
+
+      stepIndex++;
+      showStep();
+    });
+
+    loginForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      // aceita qualquer e-mail/senha (isca)
+      btnLogin.disabled = true;
+      loader.style.display = "flex";
+
+      setTimeout(() => {
+        loader.style.display = "none";
+        openOverlay();
+      }, 1000);
+    });
+
+    // ===== Confete de estrelas (canvas) =====
+    const confettiCanvas = document.getElementById("starConfetti");
+    const cctx = confettiCanvas.getContext("2d");
+    let confettiRAF = null;
+
+    function resizeConfetti() {
+      const dpr = Math.max(1, window.devicePixelRatio || 1);
+      confettiCanvas.width = Math.floor(window.innerWidth * dpr);
+      confettiCanvas.height = Math.floor(window.innerHeight * dpr);
+      confettiCanvas.style.width = window.innerWidth + "px";
+      confettiCanvas.style.height = window.innerHeight + "px";
+      cctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function rand(min, max){ return Math.random() * (max - min) + min; }
+
+    function starPath(ctx, x, y, spikes, outerR, innerR, rot) {
+      let angle = -Math.PI / 2 + rot;
+      const step = Math.PI / spikes;
+
+      ctx.beginPath();
+      ctx.moveTo(x + Math.cos(angle) * outerR, y + Math.sin(angle) * outerR);
+
+      for (let i = 0; i < spikes; i++) {
+        angle += step;
+        ctx.lineTo(x + Math.cos(angle) * innerR, y + Math.sin(angle) * innerR);
+        angle += step;
+        ctx.lineTo(x + Math.cos(angle) * outerR, y + Math.sin(angle) * outerR);
+      }
+      ctx.closePath();
+    }
+
+    function startStarConfetti({
+      durationMs = 1600,
+      count = 140,
+      spread = 1.25,
+      gravity = 0.08,
+      originX = window.innerWidth / 2,
+      originY = window.innerHeight * 0.42
+    } = {}) {
+      if (confettiRAF) cancelAnimationFrame(confettiRAF);
+
+      resizeConfetti();
+      confettiCanvas.style.display = "block";
+
+      const colors = ["#ff6fae", "#67b7ff", "#ffd1e6", "#cfe9ff"];
+
+      const pieces = Array.from({ length: count }, () => {
+        const angle = rand(-Math.PI, Math.PI);
+        const power = rand(4.5, 10) * spread;
+
+        return {
+          x: originX,
+          y: originY,
+          vx: Math.cos(angle) * power,
+          vy: Math.sin(angle) * power - rand(2, 6),
+          rot: rand(0, Math.PI * 2),
+          vrot: rand(-0.25, 0.25),
+          size: rand(6, 12),
+          spikes: Math.random() > 0.5 ? 5 : 6,
+          alpha: 1,
+          color: colors[(Math.random() * colors.length) | 0]
+        };
+      });
+
+      const start = performance.now();
+
+      function frame(now) {
+        const t = now - start;
+        cctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+        pieces.forEach(p => {
+          p.vy += gravity;
+          p.x += p.vx;
+          p.y += p.vy;
+          p.rot += p.vrot;
+
+          const life = Math.min(1, t / durationMs);
+          p.alpha = 1 - life;
+
+          cctx.save();
+          cctx.globalAlpha = Math.max(0, p.alpha);
+          cctx.fillStyle = p.color;
+          starPath(cctx, p.x, p.y, p.spikes, p.size, p.size * 0.5, p.rot);
+          cctx.fill();
+          cctx.restore();
+        });
+
+        if (t < durationMs) {
+          confettiRAF = requestAnimationFrame(frame);
+        } else {
+          confettiCanvas.style.display = "none";
+          cctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+          confettiRAF = null;
+        }
+      }
+
+      confettiRAF = requestAnimationFrame(frame);
+    }
+
+    window.addEventListener("resize", () => {
+      if (confettiCanvas.style.display !== "none") resizeConfetti();
+    });
+  </script>
+</body>
+</html>
