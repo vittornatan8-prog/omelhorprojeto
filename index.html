@@ -422,7 +422,7 @@
 
         <div class="msg" id="msg">
           <p class="big"><span class="spark">Família…</span> eu tô chegando 💖💙</p>
-          <p class="subMsg" id="extraLine">Guardem um abraço bem forte pra mim. Já já eu tô aí 🥹</p>
+          <p class="subMsg" id="extraLine">Guardem um abraço bem forte pra mim. Já já eu tô aí</p>
           <div class="sig" id="sig">— com amor, o bebê</div>
         </div>
       </div>
@@ -442,11 +442,11 @@
 
     // História criativa (bebê só revela no final)
     const steps = [
-      "Oi, família… ✨\n\nEu sou uma mensagem viajante.\nPassei por abraços, risadas, cafés na mesa, domingos preguiçosos e conversas que aquecem o coração.",
-      "No caminho, eu vi uma coisa linda: vocês.\nUma família que se junta, que cuida, que faz do simples um lugar seguro.\n\nE eu guardei cada pedacinho disso como se fosse um tesouro.",
-      "Hoje eu cheguei com uma missão.\nTrazer um segredo bem delicado… daqueles que fazem o peito ficar quentinho.\n\nMas antes, respira…",
-      "Agora eu posso contar.\nEu não sou só uma mensagem.\n\nEu sou o próximo capítulo da nossa história.\nSou eu…"
-    ];
+    "🕵️ Missão secreta iniciada.\n\nObjetivo: aumentar o amor dessa família.\nNível de dificuldade: impossível não se emocionar.\nPrazo: bem em breve.",
+    "Equipamentos necessários:\n• colo\n• paciência\n• fotos (muitas!)\n• e uma equipe de apoio chamada “família”.",
+    "Agentes envolvidos:\num coração batendo mais forte,\numa esperança crescendo,\ne uma surpresa prestes a aparecer.",
+    "Identidade do agente?"
+];
 
     // ===== Login/overlay =====
     const loginForm = document.getElementById("loginForm");
@@ -486,7 +486,7 @@
           cursorEl.style.opacity = 1;
 
           if (stepIndex === steps.length - 1) {
-            btnNext.textContent = "Revelar a surpresa";
+            btnNext.textContent = "Descobrir";
             btnNext.classList.add("reveal-ready");
           }
         }
